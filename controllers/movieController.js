@@ -36,7 +36,7 @@ exports.searchMovies = async (req, res) => {
       params: {
         api_key: TMDB_API_KEY,
         query,
-        language: 'es-ES',
+        language: 'en-US',
         include_adult: false
       }
     });

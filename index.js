@@ -28,15 +28,41 @@ app.use((err, req, res, next) => {
   res.status(500).json({ error: 'Algo salió mal!' });
 });
 
-// Sincronizar modelos con la base de datos y luego iniciar servidor
-sequelize.sync()
-  .then(() => {
-    console.log('Conectado a PostgreSQL y tablas sincronizadas');
-    // Iniciar servidor
-    app.listen(port, () => {
-      console.log(`Servidor MovieNight ejecutándose en http://localhost:${port}`);
+// Determinar si estamos en Vercel o en un entorno de desarrollo
+const isVercel = process.env.VERCEL === '1';
+
+if (isVercel) {
+  // En Vercel, solo nos conectamos a la base de datos pero no arrancamos un servidor
+  sequelize.authenticate()
+    .then(() => {
+      console.log('Conectado a PostgreSQL en Vercel');
+    })
+    .catch((err) => {
+      console.error('Error conectando a PostgreSQL en Vercel:', err);
     });
-  })
-  .catch((err) => {
-    console.error('Error conectando a PostgreSQL:', err);
-  });
+    
+  // Sincronizar modelos en Vercel (con cuidado)
+  sequelize.sync()
+    .then(() => {
+      console.log('Modelos sincronizados en Vercel');
+    })
+    .catch((err) => {
+      console.error('Error sincronizando modelos en Vercel:', err);
+    });
+} else {
+  // En desarrollo, sincronizamos modelos y arrancamos el servidor
+  sequelize.sync()
+    .then(() => {
+      console.log('Conectado a PostgreSQL y tablas sincronizadas');
+      // Iniciar servidor
+      app.listen(port, () => {
+        console.log(`Servidor MovieNight ejecutándose en http://localhost:${port}`);
+      });
+    })
+    .catch((err) => {
+      console.error('Error conectando a PostgreSQL:', err);
+    });
+}
+
+// Exportar la aplicación para Vercel
+module.exports = app;

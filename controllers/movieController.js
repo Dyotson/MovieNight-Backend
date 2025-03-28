@@ -53,7 +53,7 @@ exports.searchMovies = async (req, res) => {
               const detailsResponse = await axios.get(`${TMDB_BASE_URL}/movie/${tmdbMovie.id}`, {
                 params: {
                   api_key: TMDB_API_KEY,
-                  language: 'es-ES'
+                  language: 'en-US'
                 }
               });
               
@@ -124,7 +124,7 @@ exports.getMovieDetails = async (req, res) => {
       const response = await axios.get(`${TMDB_BASE_URL}/movie/${id}`, {
         params: {
           api_key: TMDB_API_KEY,
-          language: 'es-ES',
+          language: 'en-US',
           append_to_response: 'videos,credits'
         }
       });
@@ -155,7 +155,7 @@ exports.getPopularMovies = async (req, res) => {
     const response = await axios.get(`${TMDB_BASE_URL}/movie/popular`, {
       params: {
         api_key: TMDB_API_KEY,
-        language: 'es-ES',
+        language: 'en-US',
         page: 1
       }
     });
